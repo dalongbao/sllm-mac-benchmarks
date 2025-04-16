@@ -7,7 +7,9 @@ This script was written for MLX and Transformers; llama-bench was used for Llama
 ## Experiment parameters
 - **Device**: Macbook Pro 2023 M2 Pro 16GB RAM 19-Core GPU
 - **Prompt**: "Do you think it's possible to build a time machine?" (38 tokens for Ollama, 13 tokens for MLX)
-- ** 
+
+### llama.cpp
+llama-bench --model <model\_name> --n-prompt 128 --verbose
 
 ## Metrics
 - Time to first token
@@ -27,3 +29,4 @@ This script was written for MLX and Transformers; llama-bench was used for Llama
 ## To do
 - More kwargs in argparse
 - Memory profiling for transformers
+- conversion of full precision models and run with llama.cpp and ollama

@@ -1,13 +1,10 @@
 import time
 import sys
 import argparse
-import tracemalloc
 import torch
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from mlx_lm import load, generate
-
-prompt = "Do you think it's possible to build a time machine?"
 
 def main(args):
     backend = args.backend
@@ -41,6 +38,7 @@ def mlx_bench(
     )
     generated = time.time()
 
+    print(f"Model: {model_name}")
     print(f"Loading time: {loadtime - start}")
     print(f"Generation time: {generated - loadtime}")
 
@@ -61,12 +59,13 @@ def transformers_bench(
     tokenized = time.time()
 
     generated_ids = model.generate(**model_inputs, max_new_tokens=max_new_tokens)
-    tokens = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    tokens = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
     generated = time.time()
 
     print(f"User: {prompt}")
     print(f"{model_name}: {tokens}")
 
+    print(f"Model: {model_name}")
     print(f"Loading time: {load - start:.4f} seconds")
     print(f"Tokenizing time: {tokenized - load:.4f} seconds")
     print(f"Generation time: {generated - tokenized:.4f} seconds")
