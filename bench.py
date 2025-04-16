@@ -10,18 +10,18 @@ def main(args):
     backend = args.backend
     model_name = args.model_name
     quantization = args.quantization
-    max_new_tokens = args.max_new_tokens
+    max_tokens = args.max_tokens
     prompt=args.prompt
 
     if backend == "mlx":
-        mlx_bench(model_name, quantization, max_new_tokens, prompt)
+        mlx_bench(model_name, quantization, max_tokens, prompt)
     elif backend == "transformers":
-        transformers_bench(model_name, quantization, max_new_tokens, prompt)
+        transformers_bench(model_name, quantization, max_tokens, prompt)
 
 def mlx_bench(
     model_name, 
     quantization, 
-    max_new_tokens,
+    max_tokens,
     prompt
 ):
     start = time.time()
@@ -33,7 +33,7 @@ def mlx_bench(
         model, 
         tokenizer, 
         prompt=prompt, 
-        max_tokens=max_new_tokens,
+        max_tokens=max_tokens,
         verbose=True
     )
     generated = time.time()
@@ -46,19 +46,19 @@ def mlx_bench(
 def transformers_bench(
     model_name, 
     quantization, 
-    max_new_tokens,
+    max_tokens,
     prompt
 ):
     start = time.time()
 
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name).to("mps")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     load = time.time()
 
-    model_inputs = tokenizer(prompt, return_tensors="pt")
+    model_inputs = tokenizer([prompt], return_tensors="pt").to("mps")
     tokenized = time.time()
 
-    generated_ids = model.generate(**model_inputs, max_new_tokens=max_new_tokens)
+    generated_ids = model.generate(**model_inputs, max_length=max_tokens)
     tokens = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
     generated = time.time()
 
@@ -104,7 +104,7 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "--max-new-tokens",
+        "--max-tokens",
         type=int,
         help=(
             "Maximum number of tokens generated. Defaults to 128."
