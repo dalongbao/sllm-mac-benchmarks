@@ -12,10 +12,10 @@ This script was written for MLX and Transformers; llama-bench was used for llama
 - **Prompt**: "Do you think it's possible to build a time machine?" (38 tokens for Ollama, 13 tokens for MLX)
 
 ### llama.cpp
-`llama-bench --m <model\_name>`
+`llama-bench --m <model_name>`
 
 ### Ollama
-`ollama run <model\_name>`
+`ollama run <model_name>`
 
 ## Metrics
 - Time to first token
